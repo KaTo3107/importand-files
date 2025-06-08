@@ -3,73 +3,78 @@ $groups = @(
     @{ 
         Category = "Browser"
         Items = @(
-            @{ Name = "Google Chrome"; Id = "Google.Chrome"; Selected = $false },
-            @{ Name = "Mozilla Firefox"; Id = "Mozilla.Firefox"; Selected = $false }
+            @{ Name = "Google Chrome"; Id = "Google.Chrome"; Selected = $false; PostInstall = { } },
+            @{ Name = "Mozilla Firefox"; Id = "Mozilla.Firefox"; Selected = $false; PostInstall = { } }
         )
     },
     @{ 
         Category = "Archivierung & Packprogramme"
         Items = @(
-            @{ Name = "WinRAR"; Id = "RARLab.WinRAR"; Selected = $false },
-            @{ Name = "7-Zip"; Id = "7zip.7zip"; Selected = $true }
+            @{ Name = "WinRAR"; Id = "RARLab.WinRAR"; Selected = $false; PostInstall = { } },
+            @{ Name = "7-Zip"; Id = "7zip.7zip"; Selected = $true; PostInstall = { } }
         )
     },
     @{
         Category = "Gaming"
         Items = @(
-            @{ Name = "Steam"; Id = "Valve.Steam"; Selected = $true },
-            @{ Name = "Battle.net"; Id = "Blizzard.BattleNet"; Selected = $false },
-            @{ Name = "Epic Games Launcher"; Id = "EpicGames.EpicGamesLauncher"; Selected = $false },
-            @{ Name = "EA Launcher"; Id = "ElectronicArts.EADesktop"; Selected = $false },
-            @{ Name = "League Of Legends ( Maybe nur Riot Client download )"; Id = "RiotGames.LeagueOfLegends.EUW"; Selected = $false },
-            @{ Name = "Valorant ( Maybe nur Riot Client download )"; Id = "RiotGames.Valorant.EU"; Selected = $false }
+            @{ Name = "Steam"; Id = "Valve.Steam"; Selected = $true; PostInstall = { } },
+            @{ Name = "Battle.net"; Id = "Blizzard.BattleNet"; Selected = $false; PostInstall = { } },
+            @{ Name = "Epic Games Launcher"; Id = "EpicGames.EpicGamesLauncher"; Selected = $false; PostInstall = { } },
+            @{ Name = "EA Launcher"; Id = "ElectronicArts.EADesktop"; Selected = $false; PostInstall = { } },
+            @{ Name = "League Of Legends ( Maybe nur Riot Client download )"; Id = "RiotGames.LeagueOfLegends.EUW"; Selected = $false; PostInstall = { } },
+            @{ Name = "Valorant ( Maybe nur Riot Client download )"; Id = "RiotGames.Valorant.EU"; Selected = $false; PostInstall = { } }
         )
     },
     @{ 
         Category = "Multimedia & Kommunikation"
         Items = @(
-            
-            @{ Name = "VLC Player"; Id = "VideoLAN.VLC"; Selected = $false },
-            @{ Name = "GIMP"; Id = "GIMP.GIMP"; Selected = $false },
-            @{ Name = "Bambu Lab Studio"; Id = "bambulab.bambulab-studio"; Selected = $false },
-            @{ Name = "Teamspeak 6"; Id = "TeamSpeakSystems.TeamSpeak"; Selected = $false },
-            @{ Name = "Whatsapp Beta"; Id = "9NBDXK71NK08"; Selected = $true },
-            @{ Name = "OBS Studio"; Id = "OBSProject.OBSStudio"; Selected = $true },
-            @{ Name = "TeamViewer"; Id = "TeamViewer.TeamViewer"; Selected = $false },
-            @{ Name = "Discord"; Id = "Discord.Discord"; Selected = $true }
+            @{ Name = "VLC Player"; Id = "VideoLAN.VLC"; Selected = $false; PostInstall = { } },
+            @{ Name = "GIMP"; Id = "GIMP.GIMP"; Selected = $false; PostInstall = { } },
+            @{ Name = "Bambu Lab Studio"; Id = "bambulab.bambulab-studio"; Selected = $false; PostInstall = { } },
+            @{ Name = "Teamspeak 6"; Id = "TeamSpeakSystems.TeamSpeak"; Selected = $false; PostInstall = { } },
+            @{ Name = "Whatsapp Beta"; Id = "9NBDXK71NK08"; Selected = $true; PostInstall = { } },
+            @{ Name = "OBS Studio"; Id = "OBSProject.OBSStudio"; Selected = $true; PostInstall = { } },
+            @{ Name = "TeamViewer"; Id = "TeamViewer.TeamViewer"; Selected = $false; PostInstall = { } },
+            @{ Name = "Discord"; Id = "Discord.Discord"; Selected = $true; PostInstall = { } }
         )
     },
     @{ 
         Category = "Tools & Dienstprogramme"
         Items = @(
-            @{ Name = "CPU-Z"; Id = "CPUID.CPU-Z"; Selected = $false },
-            @{ Name = "Wireshark"; Id = "WiresharkFoundation.Wireshark"; Selected = $false },
-            @{ Name = ".NET Framework Developer Pack"; Id = "Microsoft.DotNet.Framework.DeveloperPack_4"; Selected = $false },
-            @{ Name = "NVIDIA Treiber (WinOF 1)"; Id = "Mellanox.MFT"; Selected = $false },
-            @{ Name = "NVIDIA Treiber (WinOF 2)"; Id = "Mellanox.WinOF2"; Selected = $false },
-            @{ Name = "Lightshot"; Id = "Skillbrains.Lightshot"; Selected = $false },
-            @{ Name = "Bitwarden"; Id = "Bitwarden.Bitwarden"; Selected = $false },
-            @{ Name = "Languagetool"; Id = "9PFZ3G4D1C9R"; Selected = $false }
+            @{ Name = "CPU-Z"; Id = "CPUID.CPU-Z"; Selected = $false; PostInstall = { } },
+            @{ Name = "Wireshark"; Id = "WiresharkFoundation.Wireshark"; Selected = $false; PostInstall = { } },
+            @{ Name = ".NET Framework Developer Pack"; Id = "Microsoft.DotNet.Framework.DeveloperPack_4"; Selected = $false; PostInstall = { } },
+            @{ Name = "NVIDIA Treiber (WinOF 1)"; Id = "Mellanox.MFT"; Selected = $false; PostInstall = { } },
+            @{ Name = "NVIDIA Treiber (WinOF 2)"; Id = "Mellanox.WinOF2"; Selected = $false; PostInstall = { } },
+            @{ Name = "Lightshot"; Id = "Skillbrains.Lightshot"; Selected = $false; PostInstall = { } },
+            @{ Name = "Bitwarden"; Id = "Bitwarden.Bitwarden"; Selected = $false; PostInstall = { } },
+            @{ Name = "Languagetool"; Id = "9PFZ3G4D1C9R"; Selected = $false; PostInstall = { } }
         )
     },
     @{ 
         Category = "Entwicklung & Editoren"
         Items = @(
-            @{ Name = "Notepad++"; Id = "Notepad++.Notepad++"; Selected = $true },
-            @{ Name = "Visual Studio Code"; Id = "Microsoft.VisualStudioCode"; Selected = $true },
-            @{ Name = "Jetbrains Toolbox"; Id = "XPFPPN5PLH3BFV"; Selected = $true },
-            @{ Name = "Git"; Id = "Git.Git"; Selected = $true },
-            @{ Name = "Windows Terminal"; Id = "Microsoft.WindowsTerminal"; Selected = $true },
-            @{ Name = "Oh My Posh"; Id = "JanDeDobbeleer.OhMyPosh"; Selected = $true }
+            @{ Name = "Notepad++"; Id = "Notepad++.Notepad++"; Selected = $true; PostInstall = { } },
+            @{ Name = "Visual Studio Code"; Id = "Microsoft.VisualStudioCode"; Selected = $true; PostInstall = { } },
+            @{ Name = "Jetbrains Toolbox"; Id = "XPFPPN5PLH3BFV"; Selected = $true; PostInstall = { } },
+            @{ Name = "Git"; Id = "Git.Git"; Selected = $true; PostInstall = { } },
+            @{ Name = "Windows Terminal"; Id = "Microsoft.WindowsTerminal"; Selected = $true; PostInstall = { } },
+            @{ Name = "Oh My Posh"; Id = "JanDeDobbeleer.OhMyPosh"; Selected = $true; PostInstall = { } }
         )
     },
     @{ 
         Category = "Dateiübertragung & Remote-Zugriff"
         Items = @(
-            @{ Name = "MobaXterm"; Id = "Mobatek.MobaXterm"; Selected = $false },
-            @{ Name = "FileZilla"; Id = "FileZilla.FileZilla"; Selected = $false },
-            @{ Name = "WinSCP"; Id = "WinSCP.WinSCP"; Selected = $false },
-            @{ Name = "AnyDesk"; Id = "AnyDeskSoftwareGmbH.AnyDesk"; Selected = $false }
+            @{ Name = "MobaXterm"; Id = "Mobatek.MobaXterm"; Selected = $false; PostInstall = { } },
+            @{ Name = "FileZilla"; Id = "FileZilla.FileZilla"; Selected = $false; PostInstall = { } },
+            @{ Name = "WinSCP"; Id = "WinSCP.WinSCP"; Selected = $false; PostInstall = { } },
+            @{ Name = "AnyDesk"; Id = "AnyDeskSoftwareGmbH.AnyDesk"; Selected = $false; PostInstall = { } }
+            @{ Name = "WinRAR"; Id = "RARLab.WinRAR"; Selected = $false; PostInstall = {
+                    if (Test-Path "C:\Windows\Setup\Scripts\rarreg.key") {
+                        Copy-Item "C:\Windows\Setup\Scripts\rarreg.key" -Destination "$env:ProgramFiles\WinRAR\" -Force
+                    }
+                } 
+            }
         )
     }
 )
@@ -234,4 +239,4 @@ if ($choice -eq "J") {
     Restart-Computer -Force
 }
 
-# Copy-Item "C:\Windows\Setup\Scripts\rarreg.key" -Destination "$env:ProgramFiles\WinRAR\" -Force
+# 
