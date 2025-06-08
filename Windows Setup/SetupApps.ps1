@@ -242,5 +242,3 @@ $choice = Read-Host "System jetzt neu starten? (J/N)"
 if ($choice -eq "J") {
     Restart-Computer -Force
 }
-
-# 
