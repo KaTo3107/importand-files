@@ -11,7 +11,12 @@ $groups = @(
         Category = "Archivierung & Packprogramme"
         Items = @(
             @{ Name = "WinRAR"; Id = "RARLab.WinRAR"; Selected = $false; PostInstall = { } },
-            @{ Name = "7-Zip"; Id = "7zip.7zip"; Selected = $true; PostInstall = { } }
+            @{ Name = "7-Zip"; Id = "7zip.7zip"; Selected = $true; PostInstall = {
+                    if (Test-Path "C:\Windows\Setup\Scripts\rarreg.key") {
+                        Copy-Item "C:\Windows\Setup\Scripts\rarreg.key" -Destination "$env:ProgramFiles\WinRAR\" -Force
+                    }
+                }  
+            }
         )
     },
     @{
@@ -32,16 +37,16 @@ $groups = @(
             @{ Name = "GIMP"; Id = "GIMP.GIMP"; Selected = $false; PostInstall = { } },
             @{ Name = "Bambu Lab Studio"; Id = "bambulab.bambulab-studio"; Selected = $false; PostInstall = { } },
             @{ Name = "Teamspeak 6"; Id = "TeamSpeakSystems.TeamSpeak"; Selected = $false; PostInstall = { } },
+            @{ Name = "Whatsapp"; Id = "9NKSQGP7F2NH"; Selected = $true; PostInstall = { } },
             @{ Name = "Whatsapp Beta"; Id = "9NBDXK71NK08"; Selected = $true; PostInstall = { } },
             @{ Name = "OBS Studio"; Id = "OBSProject.OBSStudio"; Selected = $true; PostInstall = { } },
-            @{ Name = "TeamViewer"; Id = "TeamViewer.TeamViewer"; Selected = $false; PostInstall = { } },
             @{ Name = "Discord"; Id = "Discord.Discord"; Selected = $true; PostInstall = { } }
         )
     },
     @{ 
         Category = "Tools & Dienstprogramme"
         Items = @(
-            @{ Name = "CPU-Z"; Id = "CPUID.CPU-Z"; Selected = $false; PostInstall = { } },
+            @{ Name = "CPU-Z"; Id = "CPUID.CPU-Z"; Selected = $true; PostInstall = { } },
             @{ Name = "Wireshark"; Id = "WiresharkFoundation.Wireshark"; Selected = $false; PostInstall = { } },
             @{ Name = ".NET Framework Developer Pack"; Id = "Microsoft.DotNet.Framework.DeveloperPack_4"; Selected = $false; PostInstall = { } },
             @{ Name = "NVIDIA Treiber (WinOF 1)"; Id = "Mellanox.MFT"; Selected = $false; PostInstall = { } },
@@ -54,7 +59,7 @@ $groups = @(
     @{ 
         Category = "Entwicklung & Editoren"
         Items = @(
-            @{ Name = "Notepad++"; Id = "Notepad++.Notepad++"; Selected = $true; PostInstall = { } },
+            @{ Name = "Notepad++"; Id = "Notepad++.Notepad++"; Selected = $false; PostInstall = { } },
             @{ Name = "Visual Studio Code"; Id = "Microsoft.VisualStudioCode"; Selected = $true; PostInstall = { } },
             @{ Name = "Jetbrains Toolbox"; Id = "XPFPPN5PLH3BFV"; Selected = $true; PostInstall = { } },
             @{ Name = "Git"; Id = "Git.Git"; Selected = $true; PostInstall = { } },
@@ -66,15 +71,9 @@ $groups = @(
         Category = "Dateiübertragung & Remote-Zugriff"
         Items = @(
             @{ Name = "MobaXterm"; Id = "Mobatek.MobaXterm"; Selected = $false; PostInstall = { } },
-            @{ Name = "FileZilla"; Id = "FileZilla.FileZilla"; Selected = $false; PostInstall = { } },
             @{ Name = "WinSCP"; Id = "WinSCP.WinSCP"; Selected = $false; PostInstall = { } },
+            @{ Name = "TeamViewer"; Id = "TeamViewer.TeamViewer"; Selected = $false; PostInstall = { } },
             @{ Name = "AnyDesk"; Id = "AnyDeskSoftwareGmbH.AnyDesk"; Selected = $false; PostInstall = { } }
-            @{ Name = "WinRAR"; Id = "RARLab.WinRAR"; Selected = $false; PostInstall = {
-                    if (Test-Path "C:\Windows\Setup\Scripts\rarreg.key") {
-                        Copy-Item "C:\Windows\Setup\Scripts\rarreg.key" -Destination "$env:ProgramFiles\WinRAR\" -Force
-                    }
-                } 
-            }
         )
     }
 )
@@ -134,6 +133,11 @@ foreach ($group in $groups) {
             try {
                 winget install --id $app.Id -e --silent
                 Write-Host "Erfolgreich installiert: $($app.Name)" -ForegroundColor Green
+                if ($app.PostInstall) {
+                    Write-Host "Führe Post-Installationsschritte für $($app.Name) aus..."
+                    & $app.PostInstall
+                    Write-Host "Post-Installationsschritte abgeschlossen für: $($app.Name)" -ForegroundColor Green
+                }
             } catch {
                 Write-Host "Fehler bei: $($app.Name)" -ForegroundColor Red
             }
@@ -211,7 +215,7 @@ foreach ($group in $groups) {
         if ($app.Selected) {
             Write-Host "Installiere $($app.Name)..."
             try {
-                winget install --id $app.Id -e --silent
+                winget install --id $app.Id -e --silent --accept-package-agreements --accept-source-agreements
             } catch {
                 Write-Host "Fehler bei $($app.Name): $_" -ForegroundColor Red
             }
