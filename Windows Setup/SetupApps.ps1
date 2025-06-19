@@ -1,160 +1,135 @@
 # Define applications
+enum InstallType {
+    Winget
+    SetupScript
+}
+
+class Category {
+    [string]$Name
+    [array]$Items
+
+    Category([string]$name, [array]$items) {
+        $this.Name = $name
+        $this.Items = $items
+    }
+}
+
+class Item {
+    [string]$Name
+
+    # Application ID for winget or FileName for setup scripts
+    # If you use a setup script, the Id should be the name of the script file with extension.
+    # For example, if the script is "GoogleChromeSetup.exe", the Id should be "GoogleChromeSetup.exe".
+    # The Script should be located in "C:\Windows\Setup\Scripts\Software\".
+    [string]$Id  
+    [bool]$Selected
+    [scriptblock]$PostInstall
+    [InstallType]$InstallType
+
+    # Index for Installation order.
+    # The Lowest index will be installed first.
+    # Default: 1000
+    [int]$index 
+
+    Item([string]$name, [string]$id, [bool]$selected, [scriptblock]$postInstall, [InstallType]$installType = [InstallType]::Winget, [int]$index = 1000) {
+        $this.Name = $name
+        $this.Id = $id
+        $this.Selected = $selected
+        $this.PostInstall = $postInstall
+        $this.InstallType = $installType
+        $this.index = $index
+    }
+}
+
 $groups = @(
-    @{ 
-        Category = "Browser"
-        Items = @(
-            @{ Name = "Google Chrome"; Id = "Google.Chrome"; Selected = $false; PostInstall = { } },
-            @{ Name = "Mozilla Firefox"; Id = "Mozilla.Firefox"; Selected = $false; PostInstall = { } }
+    [Category]::new(
+        "Browser",
+        @(
+            [Item]::new("Google Chrome", "Google.Chrome", $false, { }),
+            [Item]::new("Mozilla Firefox", "Mozilla.Firefox", $false, { })
         )
-    },
-    @{ 
-        Category = "Archivierung & Packprogramme"
-        Items = @(
-            @{ Name = "WinRAR"; Id = "RARLab.WinRAR"; Selected = $false; PostInstall = {
+    ),
+    [Category]::new(
+        "Archivierung & Packprogramme",
+        @(
+            [Item]::new(
+                "WinRAR",
+                "RARLab.WinRAR",
+                $false,
+                {
                     if (Test-Path "C:\Windows\Setup\Scripts\rarreg.key") {
                         Copy-Item "C:\Windows\Setup\Scripts\rarreg.key" -Destination "$env:ProgramFiles\WinRAR\" -Force
                     }
-                 }
-            },
-            @{ Name = "7-Zip"; Id = "7zip.7zip"; Selected = $true; PostInstall = { } }
+                },
+                [InstallType]::Winget
+            ),
+            [Item]::new("7-Zip", "7zip.7zip", $true, { })
         )
-    },
-    @{
-        Category = "Gaming"
-        Items = @(
-            @{ Name = "Steam"; Id = "Valve.Steam"; Selected = $true; PostInstall = { } },
-            @{ Name = "Battle.net"; Id = "Blizzard.BattleNet"; Selected = $false; PostInstall = { } },
-            @{ Name = "Epic Games Launcher"; Id = "EpicGames.EpicGamesLauncher"; Selected = $false; PostInstall = { } },
-            @{ Name = "EA Launcher"; Id = "ElectronicArts.EADesktop"; Selected = $false; PostInstall = { } },
-            @{ Name = "League Of Legends ( Maybe nur Riot Client download )"; Id = "RiotGames.LeagueOfLegends.EUW"; Selected = $false; PostInstall = { } },
-            @{ Name = "Valorant ( Maybe nur Riot Client download )"; Id = "RiotGames.Valorant.EU"; Selected = $false; PostInstall = { } }
+    ),
+    [Category]::new(
+        "Gaming",
+        @(
+            [Item]::new("Steam", "Valve.Steam", $true, { }),
+            [Item]::new("Battle.net", "Blizzard.BattleNet", $false, { }),
+            [Item]::new("Epic Games Launcher", "EpicGames.EpicGamesLauncher", $false, { }),
+            [Item]::new("EA Launcher", "ElectronicArts.EADesktop", $false, { }),
+            [Item]::new("League Of Legends ( Maybe nur Riot Client download )", "RiotGames.LeagueOfLegends.EUW", $false, { }),
+            [Item]::new("Valorant ( Maybe nur Riot Client download )", "RiotGames.Valorant.EU", $false, { })
         )
-    },
-    @{ 
-        Category = "Multimedia & Kommunikation"
-        Items = @(
-            @{ Name = "VLC Player"; Id = "VideoLAN.VLC"; Selected = $false; PostInstall = { } },
-            @{ Name = "GIMP"; Id = "GIMP.GIMP"; Selected = $false; PostInstall = { } },
-            @{ Name = "Bambu Lab Studio"; Id = "bambulab.bambulab-studio"; Selected = $false; PostInstall = { } },
-            @{ Name = "Teamspeak 6"; Id = "TeamSpeakSystems.TeamSpeak"; Selected = $false; PostInstall = { } },
-            @{ Name = "Whatsapp"; Id = "9NKSQGP7F2NH"; Selected = $true; PostInstall = { } },
-            @{ Name = "Whatsapp Beta"; Id = "9NBDXK71NK08"; Selected = $true; PostInstall = { } },
-            @{ Name = "OBS Studio"; Id = "OBSProject.OBSStudio"; Selected = $true; PostInstall = { } },
-            @{ Name = "Discord"; Id = "Discord.Discord"; Selected = $true; PostInstall = { } }
+    ),
+    [Category]::new(
+        "Multimedia & Kommunikation",
+        @(
+            [Item]::new("VLC Player", "VideoLAN.VLC", $false, { }),
+            [Item]::new("GIMP", "GIMP.GIMP", $false, { }),
+            [Item]::new("Bambu Lab Studio", "bambulab.bambulab-studio", $false, { }),
+            [Item]::new("Teamspeak 6", "TeamSpeakSystems.TeamSpeak", $false, { }),
+            [Item]::new("Whatsapp", "9NKSQGP7F2NH", $true, { }),
+            [Item]::new("Whatsapp Beta", "9NBDXK71NK08", $true, { }),
+            [Item]::new("OBS Studio", "OBSProject.OBSStudio", $true, { }),
+            [Item]::new("Discord", "Discord.Discord", $true, { })
         )
-    },
-    @{ 
-        Category = "Tools & Dienstprogramme"
-        Items = @(
-            @{ Name = "CPU-Z"; Id = "CPUID.CPU-Z"; Selected = $true; PostInstall = { } },
-            @{ Name = "Wireshark"; Id = "WiresharkFoundation.Wireshark"; Selected = $false; PostInstall = { } },
-            @{ Name = ".NET Framework Developer Pack"; Id = "Microsoft.DotNet.Framework.DeveloperPack_4"; Selected = $false; PostInstall = { } },
-            @{ Name = "NVIDIA Treiber (WinOF 1)"; Id = "Mellanox.MFT"; Selected = $false; PostInstall = { } },
-            @{ Name = "NVIDIA Treiber (WinOF 2)"; Id = "Mellanox.WinOF2"; Selected = $false; PostInstall = { } },
-            @{ Name = "Lightshot"; Id = "Skillbrains.Lightshot"; Selected = $false; PostInstall = { } },
-            @{ Name = "Bitwarden"; Id = "Bitwarden.Bitwarden"; Selected = $false; PostInstall = { } },
-            @{ Name = "Languagetool"; Id = "9PFZ3G4D1C9R"; Selected = $false; PostInstall = { } }
+    ),
+    [Category]::new(
+        "Tools & Dienstprogramme",
+        @(
+            [Item]::new("CPU-Z", "CPUID.CPU-Z", $true, { }),
+            [Item]::new("Wireshark", "WiresharkFoundation.Wireshark", $false, { }),
+            [Item]::new(".NET Framework Developer Pack", "Microsoft.DotNet.Framework.DeveloperPack_4", $false, { }),
+            [Item]::new("WinOF - Network Driver", "WinOF", $false, { }, $InstallType::SetupScript, 0),
+            [Item]::new("Lightshot", "Skillbrains.Lightshot", $false, { }),
+            [Item]::new("Bitwarden", "Bitwarden.Bitwarden", $false, { }),
+            [Item]::new("Languagetool", "9PFZ3G4D1C9R", $false, { })
         )
-    },
-    @{ 
-        Category = "Entwicklung & Editoren"
-        Items = @(
-            @{ Name = "Notepad++"; Id = "Notepad++.Notepad++"; Selected = $false; PostInstall = { } },
-            @{ Name = "Visual Studio Code"; Id = "Microsoft.VisualStudioCode"; Selected = $true; PostInstall = { } },
-            @{ Name = "Jetbrains Toolbox"; Id = "XPFPPN5PLH3BFV"; Selected = $true; PostInstall = { } },
-            @{ Name = "Git"; Id = "Git.Git"; Selected = $true; PostInstall = { } },
-            @{ Name = "Windows Terminal"; Id = "Microsoft.WindowsTerminal"; Selected = $true; PostInstall = { } },
-            @{ Name = "Oh My Posh"; Id = "JanDeDobbeleer.OhMyPosh"; Selected = $true; PostInstall = { } }
+    ),
+    [Category]::new(
+        "Entwicklung & Editoren",
+        @(
+            [Item]::new("Notepad++", "Notepad++.Notepad++", $false, { }),
+            [Item]::new("Visual Studio Code", "Microsoft.VisualStudioCode", $true, { }),
+            [Item]::new("Jetbrains Toolbox", "XPFPPN5PLH3BFV", $true, { }),
+            [Item]::new("Git", "Git.Git", $true, { }),
+            [Item]::new("Windows Terminal", "Microsoft.WindowsTerminal", $true, { }),
+            [Item]::new("Oh My Posh", "JanDeDobbeleer.OhMyPosh", $true, { })
         )
-    },
-    @{ 
-        Category = "Dateiübertragung & Remote-Zugriff"
-        Items = @(
-            @{ Name = "MobaXterm"; Id = "Mobatek.MobaXterm"; Selected = $false; PostInstall = { } },
-            @{ Name = "WinSCP"; Id = "WinSCP.WinSCP"; Selected = $false; PostInstall = { } },
-            @{ Name = "TeamViewer"; Id = "TeamViewer.TeamViewer"; Selected = $false; PostInstall = { } },
-            @{ Name = "AnyDesk"; Id = "AnyDeskSoftwareGmbH.AnyDesk"; Selected = $false; PostInstall = { } }
+    ),
+    [Category]::new(
+        "Dateiübertragung & Remote-Zugriff",
+        @(
+            [Item]::new("MobaXterm", "Mobatek.MobaXterm", $false, { }),
+            [Item]::new("WinSCP", "WinSCP.WinSCP", $false, { }),
+            [Item]::new("TeamViewer", "TeamViewer.TeamViewer", $false, { }),
+            [Item]::new("AnyDesk", "AnyDeskSoftwareGmbH.AnyDesk", $false, { })
         )
-    }
+    )
 )
 
-$index = 0
-$done = $false
-
-function DrawMenu {
-    Clear-Host
-    Write-Host "Wähle die Programme mit [Enter] aus. Starte Installation mit [Q]. Pfeiltasten zum Navigieren.`n"
-    $i = 0
-    foreach ($group in $groups) {
-        Write-Host "`n== $($group.Category) =="
-        foreach ($item in $group.Items) {
-            $prefix = if ($i -eq $index) { ">" } else { " " }
-            $selectedMark = if ($item.Selected) { "[X]" } else { "[ ]" }
-            Write-Host "$prefix $selectedMark $($item.Name)"
-            $i++
-        }
-    }
-}
-
-$flatList = @()
-foreach ($group in $groups) {
-    # Einzelne Programme einfügen (auswählbar)
-    foreach ($item in $group.Items) {
-        $flatList += @{ Type = "Item"; Ref = $item }
-    }
-}
-
-
-while (-not $done) {
-    DrawMenu
-    $key = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-
-    switch ($key.VirtualKeyCode) {
-        38 { if ($index -gt 0) { $index-- } }                       # Hoch
-        40 { if ($index -lt $flatList.Count - 1) { $index++ } }     # Runter
-        13 {                                                        # Enter
-            $current = $flatList[$index]
-            if ($current.Type -eq "Item") {
-                $current.Ref.Selected = -not $current.Ref.Selected
-            }
-        } 
-        81 { $done = $true }                                        # Q
-    }
-}
-
-# Begin installation
-Clear-Host
-Write-Host "`nStarte Installation:`n"
-
-foreach ($group in $groups) {
-    foreach ($app in $group.Items) {
-        if ($app.Selected) {
-            Write-Host "Installiere: $($app.Name)..."
-            try {
-                winget install --id $app.Id -e --silent
-                Write-Host "Erfolgreich installiert: $($app.Name)" -ForegroundColor Green
-                if ($app.PostInstall) {
-                    Write-Host "Führe Post-Installationsschritte für $($app.Name) aus..."
-                    & $app.PostInstall
-                    Write-Host "Post-Installationsschritte abgeschlossen für: $($app.Name)" -ForegroundColor Green
-                }
-            } catch {
-                Write-Host "Fehler bei: $($app.Name)" -ForegroundColor Red
-            }
-        }
-    }
-}
-Write-Host "Fertig!" -ForegroundColor Green
-
-
 # Interaktive App-Auswahl mit Gruppierung und Tastennavigation
-
-# $groups muss vorab definiert sein – jede Gruppe enthält Category & Items
 
 # Flache Liste mit Gruppentyp für Navigation erzeugen
 $flatList = @()
 foreach ($group in $groups) {
-    $flatList += @{ Type = "Group"; Label = $group.Category }
+    $flatList += @{ Type = "Group"; Label = $group.Name }
     foreach ($item in $group.Items) {
         $flatList += @{ Type = "Item"; Ref = $item }
     }
@@ -183,7 +158,6 @@ function DrawMenu {
     }
 }
 
-
 while (-not $done) {
     DrawMenu
     $key = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
@@ -210,16 +184,45 @@ while (-not $done) {
 Clear-Host
 Write-Host "`nStarte Installation:`n"
 
+# Alle ausgewählten Apps in eine flache Liste sammeln und nach Index sortieren
+$selectedApps = @()
 foreach ($group in $groups) {
     foreach ($app in $group.Items) {
         if ($app.Selected) {
-            Write-Host "Installiere $($app.Name)..."
-            try {
+            $selectedApps += $app
+        }
+    }
+}
+$selectedApps = $selectedApps | Sort-Object index
+
+foreach ($app in $selectedApps) {
+    Write-Host "Installiere $($app.Name)..."
+    try {
+        switch ($app.InstallType) {
+            'Winget' {
                 winget install --id $app.Id -e --silent --accept-package-agreements --accept-source-agreements
-            } catch {
-                Write-Host "Fehler bei $($app.Name): $_" -ForegroundColor Red
+            }
+            'SetupScript' {
+                $scriptPath = "C:\Windows\Setup\Scripts\Software\$($app.Id)"
+                if (Test-Path $scriptPath) {
+                    Write-Host "Führe SetupScript für $($app.Name) aus: $scriptPath"
+                    & $scriptPath
+                } else {
+                    Write-Host "Kein SetupScript für $($app.Name) gefunden unter $scriptPath." -ForegroundColor Yellow
+                }
+            }
+            default {
+                Write-Host "Unbekannter InstallType für $($app.Name): $($app.InstallType)" -ForegroundColor Yellow
             }
         }
+        if ($app.PostInstall) {
+            Write-Host "Führe Post-Installationsschritte für $($app.Name) aus..."
+            & $app.PostInstall
+            Write-Host "Post-Installationsschritte abgeschlossen für: $($app.Name)" -ForegroundColor Green
+        }
+        Write-Host "Erfolgreich installiert: $($app.Name)" -ForegroundColor Green
+    } catch {
+        Write-Host "Fehler bei $($app.Name): $_" -ForegroundColor Red
     }
 }
 
@@ -229,7 +232,7 @@ Write-Host "`nEntferne Desktop-Verknüpfungen..."
 Remove-Item "$env:PUBLIC\Desktop\*.lnk" -Force -ErrorAction SilentlyContinue
 Remove-Item "$env:USERPROFILE\Desktop\*.lnk" -Force -ErrorAction SilentlyContinue
 
-Write-Host "`nAktualisiere installiere Programme..."
+Write-Host "`nAktualisiere installierte Programme..."
 winget upgrade --all --accept-package-agreements --accept-source-agreements
 
 Write-Host "`nInstalliere Windows Update Ohne Reboot"
