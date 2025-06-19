@@ -21,7 +21,7 @@
 
 ## Where to Place Additional Software Installers
 
-To automate the installation of extra software during Windows setup, place your installer files (e.g., `.exe`, `.msi`) in the following folder on your USB drive/ISO File:
+To automate the installation of extra software during Windows setup, place your installer files (e.g., `.exe`, `.msi`) in the following folder on your USB drive/ISO file:
 
 ```
 D:/$OEM$/$$/Setup/Scripts/Software
@@ -29,15 +29,27 @@ D:/$OEM$/$$/Setup/Scripts/Software
 
 - All files in this `Software` directory will be available at `C:\Windows\Setup\Scripts\Software` during Windows installation.
 - You can reference these installers in your `SetupApps.ps1` script for silent or unattended installations.
-- Make sure your installer filenames match those referenced in your script.
+- Make sure your installer filenames and their arguments match those referenced in your script.
 
 **Example:**
 ```
-D:/$OEM$/$$/Setup/Scripts/Software/7zSetup.exe
-D:/$OEM$/$$/Setup/Scripts/Software/ChromeSetup.exe
+D:/$OEM$/$$/Setup/Scripts/Software/WinOF2.exe
+
+```
+# Beispiel für einen Eintrag in SetupApps.ps1 mit Argumenten:
+@{
+    Name        = "WinOF2 - Network Driver"
+    Id          = "WinOF2.exe"
+    Selected    = $false
+    PostInstall = $null
+    InstallType = [InstallType]::SetupScript
+    Index       = 0
+    Arguments   = "/S /v/qn" # Silent install arguments
+}
 ```
 
-These files will be copied automatically and can be executed as part of your setup automation.
+- Gib die benötigten Silent-/Unattended-Installationsargumente im Feld `Arguments` an.
+- Diese Dateien werden automatisch kopiert und können im Rahmen deiner Setup-Automatisierung ausgeführt werden.
 
 ## 🔗 Helpful Links
 - unattend-generator: https://schneegans.de/windows/unattend-generator/
