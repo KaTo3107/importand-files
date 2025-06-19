@@ -4,124 +4,90 @@ enum InstallType {
     SetupScript
 }
 
-class Category {
-    [string]$Name
-    [array]$Items
-
-    Category([string]$name, [array]$items) {
-        $this.Name = $name
-        $this.Items = $items
-    }
-}
-
-class Item {
-    [string]$Name
-
-    # Application ID for winget or FileName for setup scripts
-    # If you use a setup script, the Id should be the name of the script file with extension.
-    # For example, if the script is "GoogleChromeSetup.exe", the Id should be "GoogleChromeSetup.exe".
-    # The Script should be located in "C:\Windows\Setup\Scripts\Software\".
-    [string]$Id  
-    [bool]$Selected
-    [scriptblock]$PostInstall
-    [InstallType]$InstallType
-
-    # Index for Installation order.
-    # The Lowest index will be installed first.
-    # Default: 1000
-    [int]$index 
-
-    Item([string]$name, [string]$id, [bool]$selected, [scriptblock]$postInstall, [InstallType]$installType = [InstallType]::Winget, [int]$index = 1000) {
-        $this.Name = $name
-        $this.Id = $id
-        $this.Selected = $selected
-        $this.PostInstall = $postInstall
-        $this.InstallType = $installType
-        $this.index = $index
-    }
-}
-
+# Gruppen und Items als einfache Hashtables/Arrays definieren, InstallType als Enum verwenden
 $groups = @(
-    [Category]::new(
-        "Browser",
-        @(
-            [Item]::new("Google Chrome", "Google.Chrome", $false, { }),
-            [Item]::new("Mozilla Firefox", "Mozilla.Firefox", $false, { })
+    @{
+        Name = "Browser"
+        Items = @(
+            @{ Name = "Google Chrome"; Id = "Google.Chrome"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Mozilla Firefox"; Id = "Mozilla.Firefox"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 }
         )
-    ),
-    [Category]::new(
-        "Archivierung & Packprogramme",
-        @(
-            [Item]::new(
-                "WinRAR",
-                "RARLab.WinRAR",
-                $false,
-                {
+    },
+    @{
+        Name = "Archivierung & Packprogramme"
+        Items = @(
+            @{
+                Name = "WinRAR"
+                Id = "RARLab.WinRAR"
+                Selected = $false
+                PostInstall = {
                     if (Test-Path "C:\Windows\Setup\Scripts\rarreg.key") {
                         Copy-Item "C:\Windows\Setup\Scripts\rarreg.key" -Destination "$env:ProgramFiles\WinRAR\" -Force
                     }
-                },
-                [InstallType]::Winget
-            ),
-            [Item]::new("7-Zip", "7zip.7zip", $true, { })
+                }
+                InstallType = [InstallType]::Winget
+                Index = 1000
+            },
+            @{ Name = "7-Zip"; Id = "7zip.7zip"; Selected = $true; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 }
         )
-    ),
-    [Category]::new(
-        "Gaming",
-        @(
-            [Item]::new("Steam", "Valve.Steam", $true, { }),
-            [Item]::new("Battle.net", "Blizzard.BattleNet", $false, { }),
-            [Item]::new("Epic Games Launcher", "EpicGames.EpicGamesLauncher", $false, { }),
-            [Item]::new("EA Launcher", "ElectronicArts.EADesktop", $false, { }),
-            [Item]::new("League Of Legends ( Maybe nur Riot Client download )", "RiotGames.LeagueOfLegends.EUW", $false, { }),
-            [Item]::new("Valorant ( Maybe nur Riot Client download )", "RiotGames.Valorant.EU", $false, { })
+    },
+    @{
+        Name = "Gaming"
+        Items = @(
+            @{ Name = "Steam"; Id = "Valve.Steam"; Selected = $true; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Battle.net"; Id = "Blizzard.BattleNet"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Epic Games Launcher"; Id = "EpicGames.EpicGamesLauncher"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "EA Launcher"; Id = "ElectronicArts.EADesktop"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "League Of Legends ( Maybe nur Riot Client download )"; Id = "RiotGames.LeagueOfLegends.EUW"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Valorant ( Maybe nur Riot Client download )"; Id = "RiotGames.Valorant.EU"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 }
         )
-    ),
-    [Category]::new(
-        "Multimedia & Kommunikation",
-        @(
-            [Item]::new("VLC Player", "VideoLAN.VLC", $false, { }),
-            [Item]::new("GIMP", "GIMP.GIMP", $false, { }),
-            [Item]::new("Bambu Lab Studio", "bambulab.bambulab-studio", $false, { }),
-            [Item]::new("Teamspeak 6", "TeamSpeakSystems.TeamSpeak", $false, { }),
-            [Item]::new("Whatsapp", "9NKSQGP7F2NH", $true, { }),
-            [Item]::new("Whatsapp Beta", "9NBDXK71NK08", $true, { }),
-            [Item]::new("OBS Studio", "OBSProject.OBSStudio", $true, { }),
-            [Item]::new("Discord", "Discord.Discord", $true, { })
+    },
+    @{
+        Name = "Multimedia & Kommunikation"
+        Items = @(
+            @{ Name = "VLC Player"; Id = "VideoLAN.VLC"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "GIMP"; Id = "GIMP.GIMP"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Bambu Lab Studio"; Id = "bambulab.bambulab-studio"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Teamspeak 6"; Id = "TeamSpeakSystems.TeamSpeak"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Whatsapp"; Id = "9NKSQGP7F2NH"; Selected = $true; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Whatsapp Beta"; Id = "9NBDXK71NK08"; Selected = $true; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "OBS Studio"; Id = "OBSProject.OBSStudio"; Selected = $true; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Discord"; Id = "Discord.Discord"; Selected = $true; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 }
         )
-    ),
-    [Category]::new(
-        "Tools & Dienstprogramme",
-        @(
-            [Item]::new("CPU-Z", "CPUID.CPU-Z", $true, { }),
-            [Item]::new("Wireshark", "WiresharkFoundation.Wireshark", $false, { }),
-            [Item]::new(".NET Framework Developer Pack", "Microsoft.DotNet.Framework.DeveloperPack_4", $false, { }),
-            [Item]::new("WinOF - Network Driver", "WinOF", $false, { }, $InstallType::SetupScript, 0),
-            [Item]::new("Lightshot", "Skillbrains.Lightshot", $false, { }),
-            [Item]::new("Bitwarden", "Bitwarden.Bitwarden", $false, { }),
-            [Item]::new("Languagetool", "9PFZ3G4D1C9R", $false, { })
+    },
+    @{
+        Name = "Tools & Dienstprogramme"
+        Items = @(
+            @{ Name = "CPU-Z"; Id = "CPUID.CPU-Z"; Selected = $true; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Wireshark"; Id = "WiresharkFoundation.Wireshark"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = ".NET Framework Developer Pack"; Id = "Microsoft.DotNet.Framework.DeveloperPack_4"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "WinOF1 - Network Driver"; Id = "WinOF1.exe"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::SetupScript; Index = 0 },
+            @{ Name = "WinOF2 - Network Driver"; Id = "WinOF2.exe"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::SetupScript; Index = 0 },
+            @{ Name = "Lightshot"; Id = "Skillbrains.Lightshot"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Bitwarden"; Id = "Bitwarden.Bitwarden"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Languagetool"; Id = "9PFZ3G4D1C9R"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 }
         )
-    ),
-    [Category]::new(
-        "Entwicklung & Editoren",
-        @(
-            [Item]::new("Notepad++", "Notepad++.Notepad++", $false, { }),
-            [Item]::new("Visual Studio Code", "Microsoft.VisualStudioCode", $true, { }),
-            [Item]::new("Jetbrains Toolbox", "XPFPPN5PLH3BFV", $true, { }),
-            [Item]::new("Git", "Git.Git", $true, { }),
-            [Item]::new("Windows Terminal", "Microsoft.WindowsTerminal", $true, { }),
-            [Item]::new("Oh My Posh", "JanDeDobbeleer.OhMyPosh", $true, { })
+    },
+    @{
+        Name = "Entwicklung & Editoren"
+        Items = @(
+            @{ Name = "Notepad++"; Id = "Notepad++.Notepad++"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Visual Studio Code"; Id = "Microsoft.VisualStudioCode"; Selected = $true; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Jetbrains Toolbox"; Id = "XPFPPN5PLH3BFV"; Selected = $true; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Git"; Id = "Git.Git"; Selected = $true; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Windows Terminal"; Id = "Microsoft.WindowsTerminal"; Selected = $true; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "Oh My Posh"; Id = "JanDeDobbeleer.OhMyPosh"; Selected = $true; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 }
         )
-    ),
-    [Category]::new(
-        "Dateiübertragung & Remote-Zugriff",
-        @(
-            [Item]::new("MobaXterm", "Mobatek.MobaXterm", $false, { }),
-            [Item]::new("WinSCP", "WinSCP.WinSCP", $false, { }),
-            [Item]::new("TeamViewer", "TeamViewer.TeamViewer", $false, { }),
-            [Item]::new("AnyDesk", "AnyDeskSoftwareGmbH.AnyDesk", $false, { })
+    },
+    @{
+        Name = "Dateiübertragung & Remote-Zugriff"
+        Items = @(
+            @{ Name = "MobaXterm"; Id = "Mobatek.MobaXterm"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "WinSCP"; Id = "WinSCP.WinSCP"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "TeamViewer"; Id = "TeamViewer.TeamViewer"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
+            @{ Name = "AnyDesk"; Id = "AnyDeskSoftwareGmbH.AnyDesk"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 }
         )
-    )
+    }
 )
 
 # Interaktive App-Auswahl mit Gruppierung und Tastennavigation
