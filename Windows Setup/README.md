@@ -19,5 +19,25 @@
     For a default enable, set Selected to true ("$true").
     IMPORTANT: You do not need to do this. You can always select and deselect any program.
 
+## Where to Place Additional Software Installers
+
+To automate the installation of extra software during Windows setup, place your installer files (e.g., `.exe`, `.msi`) in the following folder on your USB drive/ISO File:
+
+```
+D:/$OEM$/$$/Setup/Scripts/Software
+```
+
+- All files in this `Software` directory will be available at `C:\Windows\Setup\Scripts\Software` during Windows installation.
+- You can reference these installers in your `SetupApps.ps1` script for silent or unattended installations.
+- Make sure your installer filenames match those referenced in your script.
+
+**Example:**
+```
+D:/$OEM$/$$/Setup/Scripts/Software/7zSetup.exe
+D:/$OEM$/$$/Setup/Scripts/Software/ChromeSetup.exe
+```
+
+These files will be copied automatically and can be executed as part of your setup automation.
+
 ## 🔗 Helpful Links
 - unattend-generator: https://schneegans.de/windows/unattend-generator/

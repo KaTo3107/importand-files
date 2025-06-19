@@ -61,8 +61,8 @@ $groups = @(
             @{ Name = "CPU-Z"; Id = "CPUID.CPU-Z"; Selected = $true; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
             @{ Name = "Wireshark"; Id = "WiresharkFoundation.Wireshark"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
             @{ Name = ".NET Framework Developer Pack"; Id = "Microsoft.DotNet.Framework.DeveloperPack_4"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
-            @{ Name = "WinOF1 - Network Driver"; Id = "WinOF1.exe"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::SetupScript; Index = 0 },
-            @{ Name = "WinOF2 - Network Driver"; Id = "WinOF2.exe"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::SetupScript; Index = 0 },
+            @{ Name = "WinOF1 - Network Driver"; Id = "WinOF1.exe"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::SetupScript; Index = 0, Arguments = "/S /v/qn" },
+            @{ Name = "WinOF2 - Network Driver"; Id = "WinOF2.exe"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::SetupScript; Index = 0, Arguments = "/S /v/qn" },
             @{ Name = "Lightshot"; Id = "Skillbrains.Lightshot"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
             @{ Name = "Bitwarden"; Id = "Bitwarden.Bitwarden"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 },
             @{ Name = "Languagetool"; Id = "9PFZ3G4D1C9R"; Selected = $false; PostInstall = $null; InstallType = [InstallType]::Winget; Index = 1000 }
@@ -183,7 +183,7 @@ foreach ($app in $selectedApps) {
         }
         if ($app.PostInstall) {
             Write-Host "Führe Post-Installationsschritte für $($app.Name) aus..."
-            & $app.PostInstall
+            & $app.PostInstall $app.Arguments
             Write-Host "Post-Installationsschritte abgeschlossen für: $($app.Name)" -ForegroundColor Green
         }
         Write-Host "Erfolgreich installiert: $($app.Name)" -ForegroundColor Green
