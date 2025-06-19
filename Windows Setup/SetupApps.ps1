@@ -10,13 +10,13 @@ $groups = @(
     @{ 
         Category = "Archivierung & Packprogramme"
         Items = @(
-            @{ Name = "WinRAR"; Id = "RARLab.WinRAR"; Selected = $false; PostInstall = { } },
-            @{ Name = "7-Zip"; Id = "7zip.7zip"; Selected = $true; PostInstall = {
+            @{ Name = "WinRAR"; Id = "RARLab.WinRAR"; Selected = $false; PostInstall = {
                     if (Test-Path "C:\Windows\Setup\Scripts\rarreg.key") {
                         Copy-Item "C:\Windows\Setup\Scripts\rarreg.key" -Destination "$env:ProgramFiles\WinRAR\" -Force
                     }
-                }  
-            }
+                 }
+            },
+            @{ Name = "7-Zip"; Id = "7zip.7zip"; Selected = $true; PostInstall = { } }
         )
     },
     @{
